@@ -86,7 +86,7 @@ void passa_tempo(int tid, int sala, int decimos) {
 }
 
 // Função para entrar na sala
-void enter(int tid, int id) {
+void enter(int id) {
     // Bloqueia o mutex da sala
     pthread_mutex_lock(&rooms[id].mtx);
     
@@ -100,7 +100,7 @@ void enter(int tid, int id) {
 }
 
 // Função para sair da sala
-void leave(int tid, int id) {
+void leave(int id) {
     // Bloqueia o mutex da sala
     pthread_mutex_lock(&rooms[id].mtx);
     rooms[id].completed_trio_threads++;
@@ -128,7 +128,7 @@ void* thread_func(void* arg) {
         data->queue.pop();
 
         // Entra na sala em trio
-        enter(data->id, room.id);
+        enter(room.id);
 
         pthread_mutex_lock(&rooms[room.id].mtx);
         
@@ -147,7 +147,7 @@ void* thread_func(void* arg) {
         passa_tempo(data->id, room.id, room.time);
 
         // Sai da sala
-        leave(data->id, room.id);
+        leave(room.id);
     }
     return NULL;
 }
